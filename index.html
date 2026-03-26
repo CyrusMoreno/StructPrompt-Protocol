@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StructPrompt Generator</title>
+    <style>
+        /* Basic styling for a clean, modern look */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f6f8fa;
+            color: #24292f;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-family: inherit;
+            resize: vertical; /* Allows users to resize the box vertically */
+        }
+        button {
+            background-color: #2da44e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #2c974b;
+        }
+        #preview-box {
+            margin-top: 30px;
+            background: #f6f8fa;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            white-space: pre-wrap; /* Ensures line breaks are preserved in the preview */
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>StructPrompt Generator</h1>
+        <p>Fill out the fields below to generate and copy your structured prompt.</p>
+
+        <div class="form-group">
+            <label for="objective">**[OBJECTIVE]** (One sentence goal)</label>
+            <textarea id="objective" rows="2" placeholder="e.g., I want to make an editable interface..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="context">**[CONTEXT]** (Environment, framework, etc.)</label>
+            <textarea id="context" rows="3" placeholder="e.g., My github page is..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="inputLogic">**[INPUT / LOGIC]** (Execution steps)</label>
+            <textarea id="inputLogic" rows="5" placeholder="- Step 1&#10;- Step 2"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="constraints">**[CONSTRAINTS]**</label>
+            <textarea id="constraints" rows="4" placeholder="- show me working solutions only&#10;- let me know if cant be done"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="expectedOutput">**[EXPECTED OUTPUT]** (Exact format)</label>
+            <textarea id="expectedOutput" rows="3" placeholder="- show me your thought process..."></textarea>
+        </div>
+
+        <button onclick="generateAndCopy()">Generate & Copy to Clipboard</button>
+
+        <div id="preview-box">Your generated prompt will appear here...</div>
+    </div>
+
+    <script>
+        function generateAndCopy() {
+            // 1. Grab the values from all the textareas
+            const objective = document.getElementById('objective').value.trim();
+            const context = document.getElementById('context').value.trim();
+            const inputLogic = document.getElementById('inputLogic').value.trim();
+            const constraints = document.getElementById('constraints').value.trim();
+            const expectedOutput = document.getElementById('expectedOutput').value.trim();
+
+            // 2. Format the final string using Template Literals to preserve line breaks
+            const formattedPrompt = 
+`**[OBJECTIVE]**
+${objective}
+
+**[CONTEXT]**
+${context}
+
+**[INPUT / LOGIC]**
+${inputLogic}
+
+**[CONSTRAINTS]**
+${constraints}
+
+**[EXPECTED OUTPUT]**
+${expectedOutput}`;
+
+            // 3. Update the preview box so the user sees what they copied
+            document.getElementById('preview-box').textContent = formattedPrompt;
+
+            // 4. Use the modern Clipboard API to copy the text
+            // Important: This requires the page to be served over HTTPS (which GitHub Pages does automatically)
+            navigator.clipboard.writeText(formattedPrompt).then(() => {
+                // Success feedback
+                const btn = document.querySelector('button');
+                const originalText = btn.textContent;
+                btn.textContent = "Copied!";
+                btn.style.backgroundColor = "#24292f"; // Change color to indicate success
+                
+                // Reset button text after 2 seconds
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.backgroundColor = "#2da44e";
+                }, 2000);
+            }).catch(err => {
+                // Error handling in case the browser blocks clipboard access
+                console.error('Failed to copy text: ', err);
+                alert("Failed to copy to clipboard. You can manually copy the text from the preview box below.");
+            });
+        }
+    </script>
+</body>
+</html>
