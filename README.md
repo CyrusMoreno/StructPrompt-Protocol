@@ -78,3 +78,8 @@ LLMs are eager to please and will often rewrite your entire codebase or add unne
 Define the exact return type.
 
 * Example: "A single code block containing the updated JavaScript route. No markdown text before or after."
+
+---
+### [🚀 Click here to use the Interactive StructPrompt Generator](https://github.com/CyrusMoreno/Cyrus.Use.Data.Science)
+
+---
